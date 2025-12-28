@@ -22,12 +22,12 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
         {
             if (db.Set<IdentityRole<Guid>>().FirstOrDefault(r => r.Name == ApplicationRoles.Admin) is null)
             {
-                db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.Admin });
+                db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.Admin , NormalizedName = ApplicationRoles.Admin.ToUpper()});
                 db.SaveChanges();
             }
             if (db.Set<IdentityRole<Guid>>().FirstOrDefault(r => r.Name == ApplicationRoles.User) is null)
             {
-                db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.User });
+                db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.User , NormalizedName = ApplicationRoles.User.ToUpper() });
                 db.SaveChanges();
             }
         })
@@ -35,12 +35,12 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
             {
                 if (await db.Set<IdentityRole<Guid>>().FirstOrDefaultAsync(r => r.Name == ApplicationRoles.Admin) is null)
                 {
-                    db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.Admin });
+                    db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.Admin, NormalizedName = ApplicationRoles.Admin.ToUpper()});
                     await db.SaveChangesAsync();
                 }
                 if (await db.Set<IdentityRole<Guid>>().FirstOrDefaultAsync(r => r.Name == ApplicationRoles.User) is null)
                 {
-                    db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.User });
+                    db.Set<IdentityRole<Guid>>().Add(new IdentityRole<Guid> { Name = ApplicationRoles.User, NormalizedName = ApplicationRoles.User.ToUpper() });
                     await db.SaveChangesAsync();
                 }
             });
@@ -49,6 +49,21 @@ public class AppDbContext : IdentityDbContext<ApplicationUser, IdentityRole<Guid
     protected override void OnModelCreating(ModelBuilder builder)
     {
         base.OnModelCreating(builder);
+
+        builder.Entity<ApplicationUser>()
+            .Property(u => u.FirstName)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        builder.Entity<ApplicationUser>()
+            .Property(u => u.LastName)
+            .HasMaxLength(200)
+            .IsRequired(false);
+
+        builder.Entity<ApplicationUser>()
+            .Property(u => u.Country)
+            .HasMaxLength(200)
+            .IsRequired(false);
     }
 
 }
